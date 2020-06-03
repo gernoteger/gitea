@@ -1,0 +1,38 @@
+version: '2.4'
+
+# https://docs.docker.com/compose/compose-file/compose-file-v2/#network-configuration-reference
+services:      
+  gitea:
+    # image is alpine-based
+    image: gitea/gitea:latest
+    # image: logforwarder/filebeat:$ELK_VERSION
+    # build:
+    #   context: filebeat
+    #   args:
+    #     ELK_VERSION: $ELK_VERSION
+    
+    environment:
+      TZ: Europe/Vienna
+      USER_UID: "1000"
+      USER_GID: "1000"
+      ROOT_URL: http://speedy:8080
+
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - ./gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8080:3000"
+      - "2222:22"
+
+networks:
+  gitea:
+    external: false
+
+volumes:
+  gitea:
+    driver: local
+
